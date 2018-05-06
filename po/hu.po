@@ -14,7 +14,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 1.8.12\n"
-"Last-Translator: \n"
+"Last-Translator: Kiss Attila <attus@enterpriseforever.com>\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "Language: hu\n"
 
@@ -28,7 +28,7 @@ msgid "Jump : 1) Alphabetic; 2) Numeric"
 msgstr "Ugrás : 1) ABC; 2) Szám"
 
 msgid "Channel Manager"
-msgstr "Csatorna karbantaró"
+msgstr "Csatorna kezelő"
 
 msgid "Radio"
 msgstr "Rádió"
