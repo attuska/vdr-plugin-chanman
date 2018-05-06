@@ -1,0 +1,79 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: vdr-chanman\n"
+"Report-Msgid-Bugs-To: <see README>\n"
+"POT-Creation-Date: 2018-05-06 13:06+0200\n"
+"PO-Revision-Date: 2018-05-06 13:13+0200\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 1.8.12\n"
+"Last-Translator: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: hu\n"
+
+msgid "Max items for alphabetic order"
+msgstr "Elemek maximális száma abc rendezéshez"
+
+msgid "Show : 1) Prov.; 2) ChID; 3) Freq."
+msgstr "Mutat : 1) Prov.; 2) ChID; 3) Freq."
+
+msgid "Jump : 1) Alphabetic; 2) Numeric"
+msgstr "Ugrás : 1) ABC; 2) Szám"
+
+msgid "Channel Manager"
+msgstr "Csatorna karbantaró"
+
+msgid "Radio"
+msgstr "Rádió"
+
+msgid "Tv"
+msgstr "TV"
+
+msgid "Tv Crypt"
+msgstr "TV kódolt"
+
+msgid "All"
+msgstr "Mind"
+
+msgid "Src+Frequency"
+msgstr "Forrás+freki"
+
+msgid "Group"
+msgstr "Csoport"
+
+msgid "Src+Provider"
+msgstr "Forrás+Provider"
+
+msgid "Provider"
+msgstr "Provider"
+
+msgid "Src+Name"
+msgstr "Forrás+név"
+
+msgid "Name"
+msgstr "Név"
+
+msgid "Channels"
+msgstr "Csatornák"
+
+msgid "Button$Switch"
+msgstr "Váltógomb"
+
+msgid "Button$Cut"
+msgstr "Vágógomb"
+
+msgid "Button$Paste"
+msgstr "Beillesztőgomb"
+
+msgid "EMPTY"
+msgstr ""
+
+msgid "Button$Mark"
+msgstr "Jelölőgomb"
