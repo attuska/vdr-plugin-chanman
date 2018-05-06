@@ -1,6 +1,6 @@
 static const char *DESCRIPTION    = trNOOP( "Channel manager plugin" );
 static const char *MAINMENUENTRY  = trNOOP( "Channel manager" );
-static const char *VERSION        = "0.0.11";
+static const char *VERSION        = "0.0.10";
 
 enum eChannelSortMode { csmNumber, csmName, csmProvider, csmSrcProvider, csmSrcName , csmSrcFrequency};
 
@@ -39,13 +39,22 @@ class cMyChannel : public cListObject {
  private:
   static eChannelSortMode sortMode;
   static eChannelFilterMode filterMode;
+#if VDRVERSNUM >= 20301
+  const cChannel *channel;
+#else
   cChannel *channel;
+#endif
   int pos;
   bool isIn;
   bool toCut;
  public:
+#if VDRVERSNUM >= 20301
+  cMyChannel(const cChannel *Channel, int Pos) { channel = Channel; isIn=true;pos=Pos;toCut=false;}
+  const cChannel *GetCh(void){return channel;}
+#else
   cMyChannel(cChannel *Channel, int Pos) { channel = Channel; isIn=true;pos=Pos;toCut=false;}
   cChannel *GetCh(void){return channel;}
+#endif
   void SetCh(cChannel *Channel){ channel = Channel; isIn=true; }
   static void SetSortMode(eChannelSortMode SortMode){ sortMode=SortMode;}
   static void SetFilterMode(eChannelFilterMode FilterMode){ filterMode=FilterMode;}
@@ -160,11 +169,20 @@ class cItemChoice2 : public cOsdItem {
  private:
   int positem;
   static bool increasing;
+#if VDRVERSNUM >= 20301
+  const cChannel *channel;
+#else
   cChannel *channel;
+#endif
   cMyChannel *mychannel;
  public:
+#if VDRVERSNUM >= 20301
+  cItemChoice2(int positem, const cChannel *channel,cMyChannel *mychannel);
+  const cChannel *GetChan(void){return channel;}
+#else
   cItemChoice2(int positem,cChannel *channel,cMyChannel *mychannel);
   cChannel *GetChan(void){return channel;}
+#endif
   cMyChannel *GetMyChan(void){return mychannel;}
   int Number(void){return positem;}
   void SetPos(int Positem){positem=Positem;}

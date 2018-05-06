@@ -55,11 +55,20 @@ int cMyChannel::Compare(const cListObject &ListObject) const {
 
 void cMyChannels::Set() {
 	int pos = 1;
-	for (cChannel *channel = Channels.First(); channel;
+#if VDRVERSNUM >= 20301
+    LOCK_CHANNELS_READ;
+    for (const cChannel *channel = Channels->First(); channel;
+			channel = Channels->Next(channel)) {
+		Add(new cMyChannel(channel, pos));
+		pos++;
+	}
+#else
+    for (cChannel *channel = Channels.First(); channel;
 			channel = Channels.Next(channel)) {
 		Add(new cMyChannel(channel, pos));
 		pos++;
 	}
+#endif
 }
 
 /*cMyChannels::~cMyChannels() {
@@ -327,11 +336,15 @@ void cFirstMenu::Setup() {
 	int positem = 0;
 	number = 0;
 	bool isInGroup = false;
-
 	cMyChannel *first = NULL;
+#if VDRVERSNUM >= 20301
+	LOCK_CHANNELS_READ;
+	const cChannel *currentChannel;
+	currentChannel = Channels->GetByNumber(cDevice::CurrentChannel());
+#else
 	cChannel *currentChannel;
 	currentChannel = Channels.GetByNumber(cDevice::CurrentChannel());
-
+#endif
 	cItemChoice1 *currentItem = NULL;
 
 	Clear();
@@ -703,8 +716,14 @@ cSecondMenu::cSecondMenu(cMyChannel *firstlch, int numch) :
 	cMyChannel *lchannel;
 	number = 0;
 	lchannel = firstlch;
+#if VDRVERSNUM >= 20301
+	LOCK_CHANNELS_READ;
+	const cChannel *currentChannel;
+	currentChannel = Channels->GetByNumber(cDevice::CurrentChannel());
+#else
 	cChannel *currentChannel;
 	currentChannel = Channels.GetByNumber(cDevice::CurrentChannel());
+#endif
 	cItemChoice2 *currentItem = NULL;
 
 	for (int i = 1; i <= numch; i++) {
@@ -746,7 +765,12 @@ cMyChannel *cSecondMenu::GetMyChannel(int Index) {
 
 void cSecondMenu::Propagate(void) {
 	int i = 1;
+#if VDRVERSNUM >= 20301
+	LOCK_CHANNELS_WRITE;
+	Channels->ReNumber();
+#else
 	Channels.ReNumber();
+#endif
 	for (cItemChoice2 *ci = (cItemChoice2 *) First(); ci; ci =
 			(cItemChoice2 *) ci->Next()) {
 		ci->SetPos(i);
@@ -754,22 +778,34 @@ void cSecondMenu::Propagate(void) {
 		ci->Set();
 	}
 	Display();
+#if VDRVERSNUM >= 20301
+	Channels->SetModified();
+#else
 	Channels.SetModified(true);
+#endif
 	MyChannels.SetModified();
 }
 
 void cSecondMenu::Move(int From, int To) {
 	int CurrentChannelNr = cDevice::CurrentChannel();
+#if VDRVERSNUM >= 20301
+	LOCK_CHANNELS_WRITE;
+	cChannel *CurrentChannel = Channels->GetByNumber(CurrentChannelNr);
+#else
 	cChannel *CurrentChannel = Channels.GetByNumber(CurrentChannelNr);
+#endif
 	cChannel *FromChannel = GetChannel(From); // From e' la posizione nel menu di cItemChoice2
 	cChannel *ToChannel = GetChannel(To); // GetChannel Restituisce la posizione nella lista Channels.
 	cMyChannel *FromMyChannel = GetMyChannel(From);
 	cMyChannel *ToMyChannel = GetMyChannel(To);
-
 	if (FromChannel && ToChannel) {
 		int FromNumber = FromChannel->Number();
 		int ToNumber = ToChannel->Number();
+#if VDRVERSNUM >= 20301
+		Channels->Move(FromChannel, ToChannel);
+#else
 		Channels.Move(FromChannel, ToChannel);
+#endif
 		MyChannels.Move(FromMyChannel, ToMyChannel);
 		cOsdMenu::Move(From, To);
 		Propagate();
@@ -778,7 +814,11 @@ void cSecondMenu::Move(int From, int To) {
 		if (CurrentChannel && CurrentChannel->Number() != CurrentChannelNr) {
 			if (!cDevice::PrimaryDevice()->Replaying()
 					|| cDevice::PrimaryDevice()->Transferring())
+#if VDRVERSNUM >= 20301
+				Channels->SwitchTo(CurrentChannel->Number());
+#else
 				Channels.SwitchTo(CurrentChannel->Number());
+#endif
 			else
 				cDevice::SetCurrentChannel(CurrentChannel);
 		}
@@ -796,8 +836,14 @@ void cSecondMenu::Paste(void) {
 
 	cMyChannel *ToMyChannel = CurrentChoice->GetMyChan();
 
+#if VDRVERSNUM >= 20301
+	LOCK_CHANNELS_WRITE;
+	const cChannel *FromChannel;
+	const cChannel *ToChannel = ToMyChannel->GetCh();
+#else
 	cChannel *FromChannel;
 	cChannel *ToChannel = ToMyChannel->GetCh();
+#endif
 
 	int i = 1;
 	for (cToCutChannel *mychancut = ToCutChannels.First(); mychancut;
@@ -808,7 +854,13 @@ void cSecondMenu::Paste(void) {
 
 		FromChannel = FromMyChannel->GetCh();
 
+#if VDRVERSNUM >= 20301
+		int FromNumber = FromChannel->Number();
+		int ToNumber = ToChannel->Number();
+		Channels->Move(FromNumber, ToNumber);
+#else
 		Channels.Move(FromChannel, ToChannel);
+#endif
 		MyChannels.Move(FromMyChannel, ToMyChannel);
 
 		//void cOsdMenu::Add(cOsdItem *Item, bool Current, cOsdItem *After)
@@ -855,7 +907,11 @@ void cSecondMenu::Cut(void) {
 }
 
 eOSState cSecondMenu::Switch(void) {
+#if VDRVERSNUM >= 20301
+	const cChannel *ch = ((cItemChoice2 *) Get(Current()))->GetChan();
+#else
 	cChannel *ch = ((cItemChoice2 *) Get(Current()))->GetChan();
+#endif
 	if (ch)
 		return cDevice::PrimaryDevice()->SwitchChannel(ch, true) ?
 				osEnd : osContinue;
@@ -996,7 +1052,11 @@ int cItemChoice2::Icon() {
 		return 'C';
 }
 
+#if VDRVERSNUM >= 20301
+cItemChoice2::cItemChoice2(int Positem, const cChannel *Channel,
+#else
 cItemChoice2::cItemChoice2(int Positem, cChannel *Channel,
+#endif
 		cMyChannel *MyChannel) {
 	positem = Positem;
 	channel = Channel;
